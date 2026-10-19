@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Favorite Person 💖</title>
+
+  <!-- Google Fonts for handwritten & modern romantic feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome for cute icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- ========================================== -->
+  <!-- CUSTOM CSS STYLES                         -->
+  <!-- ========================================== -->
+  <style>
+    /* Custom Scrollbar & Selection */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #ffe4e6; }
+    ::-webkit-scrollbar-thumb { background: #fda4af; border-radius: 10px; }
+    ::selection { background: #f43f5e; color: white; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    .font-serif-romantic {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Floating Hearts Background Animation */
+    .bg-heart {
+      position: fixed;
+      pointer-events: none;
+      animation: floatUp 8s linear infinite;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) scale(0.5) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Card Glow and Glassmorphism */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 20px 40px rgba(244, 63, 94, 0.12);
+    }
+
+    /* Memory Polaroid Stack */
+    .polaroid-card {
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: center bottom;
+    }
+
+    /* Envelope Styling */
+    .envelope-wrapper {
+      perspective: 1000px;
+    }
+
+    .envelope {
+      position: relative;
+      width: 280px;
+      height: 190px;
+      background: #f43f5e;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 15px 30px rgba(225, 29, 72, 0.25);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope:hover {
+      transform: translateY(-5px);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 140px solid transparent;
+      border-right: 140px solid transparent;
+      border-top: 105px solid #e11d48;
+      transform-origin: top;
+      transition: transform 0.6s ease 0.2s, z-index 0.2s ease 0.2s;
+      z-index: 3;
+    }
+
+    .envelope.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-pocket {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 140px solid #fb7185;
+      border-right: 140px solid #fb7185;
+      border-bottom: 100px solid #f43f5e;
+      border-radius: 0 0 12px 12px;
+      z-index: 2;
+    }
+
+    .letter-preview {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+      right: 20px;
+      height: 160px;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.6s ease 0.4s;
+      z-index: 1;
+    }
+
+    .envelope.open .letter-preview {
+      transform: translateY(-100px) scale(1.05);
+      z-index: 4;
+    }
+
+    /* Pulse animation for buttons */
+    .pulse-glow {
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(244, 63, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    }
+
+    /* Audio Equalizer Bars Animation */
+    .eq-bar {
+      animation: bounce 1s ease-in-out infinite alternate;
+    }
+    .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+
+    @keyframes bounce {
+      0% { height: 4px; }
+      100% { height: 18px; }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between items-center relative p-4 md:p-8">
+
+  <!-- BACKGROUND FLOATING HEARTS CONTAINER -->
+  <div id="hearts-bg-container" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+  <!-- FLOATING MUSIC PLAYER TOGGLE BUTTON -->
+  <div class="fixed top-4 right-4 z-50">
+    <button id="music-toggle" class="glass-card flex items-center gap-2 px-4 py-2.5 rounded-full text-rose-600 font-bold shadow-md hover:scale-105 transition active:scale-95 text-sm">
+      <div id="eq-container" class="hidden flex items-end gap-0.5 h-4 w-4">
+        <span class="eq-bar bg-rose-500 w-1 rounded-full"></span>
+        <span class="eq-bar bg-rose-500 w-1 rounded-full"></span>
+        <span class="eq-bar bg-rose-500 w-1 rounded-full"></span>
+        <span class="eq-bar bg-rose-500 w-1 rounded-full"></span>
+      </div>
+      <i id="music-icon" class="fa-solid fa-music"></i>
+      <span id="music-text">Play Music 🎵</span>
+    </button>
+  </div>
+
+  <!-- MAIN MULTI-STEP CONTAINER -->
+  <main class="w-full max-w-xl my-auto relative z-10">
+
+    <!-- ========================================== -->
+    <!-- PAGE 1: APOLOGY & FORGIVENESS              -->
+    <!-- ========================================== -->
+    <div id="page-1" class="glass-card rounded-3xl p-6 md:p-10 text-center transition-all duration-500 transform scale-100">
+      
+      <!-- Animated Bear/Heart Header -->
+      <div class="relative w-28 h-28 mx-auto mb-4 flex items-center justify-center bg-rose-100 rounded-full shadow-inner">
+        <span id="apology-emoji" class="text-6xl transform transition duration-300 hover:scale-110">🥺</span>
+      </div>
+
+      <span class="inline-block px-3 py-1 bg-rose-100 text-rose-600 rounded-full text-xs font-extrabold uppercase tracking-widest mb-3">
+        A Tiny Message From My Heart
+      </span>
+
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-800 mb-3">
+        I'm So So Sorry, My Love... 😔❤️
+      </h1>
+
+      <p class="text-gray-600 leading-relaxed text-sm md:text-base mb-6">
+        I hate that we fought. Knowing I made you feel sad or upset breaks my heart into a million pieces. You mean the absolute world to me, and I never want to be the reason for your tears. 
+      </p>
+
+      <div class="bg-rose-50/70 border border-rose-100 rounded-2xl p-4 mb-8">
+        <p id="question-text" class="text-rose-700 font-bold text-base md:text-lg">
+          Are you still mad at me? 🥺
+        </p>
+      </div>
+
+      <!-- Interactive Decision Buttons -->
+      <div id="button-group" class="relative min-h-[120px] flex flex-col md:flex-row justify-center items-center gap-4">
+        
+        <!-- YES BUTTON (Shrinks or Moves) -->
+        <button id="yes-btn" onclick="handleYesClick()" class="w-full md:w-auto px-6 py-3.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-2xl transition-all duration-300 shadow-sm active:scale-95 text-sm md:text-base">
+          Yes, I'm still mad! 😤
+        </button>
+
+        <!-- NO BUTTON (Grows) -->
+        <button id="no-btn" onclick="handleForgiveness()" class="w-full md:w-auto px-8 py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-rose-300/50 active:scale-95 text-sm md:text-base pulse-glow">
+          No, I forgive you 🥰
+        </button>
+
+      </div>
+
+      <!-- SUCCESS TRANSITION BUTTON (Hidden initially) -->
+      <div id="forgiven-section" class="hidden mt-6 animate-fade-in">
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl mb-6 text-emerald-700 text-sm font-semibold">
+          🎉 Yay! Thank you for forgiving me! I promise to make it up to you every single day! 💕
+        </div>
+        <button onclick="goToPage(2)" class="w-full py-4 bg-gradient-to-r from-rose-500 via-pink-500 to-rose-500 hover:opacity-95 text-white font-extrabold rounded-2xl shadow-xl transition transform hover:-translate-y-1 text-base md:text-lg flex items-center justify-center gap-2">
+          <span>Open Your Gift 🎁</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- PAGE 2: MEMORIES & REASONS I LOVE YOU     -->
+    <!-- ========================================== -->
+    <div id="page-2" class="glass-card rounded-3xl p-6 md:p-8 text-center hidden transition-all duration-500 transform">
+      
+      <div class="flex items-center justify-between mb-6">
+        <span class="text-xs font-bold text-rose-500 uppercase tracking-widest bg-rose-100 px-3 py-1 rounded-full">
+          Step 2 of 3 • Our Special Moments
+        </span>
+        <span class="text-2xl">📸</span>
+      </div>
+
+      <h2 class="text-2xl font-extrabold text-gray-800 mb-2">
+        Memories & Cute Reminders 💕
+      </h2>
+      <p class="text-xs md:text-sm text-gray-500 mb-6">
+        Tap the card below to flip through some sweet notes!
+      </p>
+
+      <!-- POLAROID CARD STACK INTERACTIVE -->
+      <div class="relative w-full max-w-xs mx-auto h-72 mb-8 flex items-center justify-center">
+        <div id="polaroid-card" onclick="nextMemoryCard()" class="polaroid-card cursor-pointer absolute inset-0 bg-white p-4 pb-6 rounded-2xl shadow-xl border border-gray-100 flex flex-col justify-between transform hover:rotate-1 hover:scale-105 transition-all">
+          
+          <div class="w-full h-44 bg-rose-50 rounded-xl overflow-hidden relative flex items-center justify-center border border-rose-100">
+            <span id="memory-icon" class="text-6xl animate-bounce">✨</span>
+          </div>
+
+          <div class="text-center pt-2">
+            <p id="memory-text" class="font-handwriting text-2xl text-rose-600 font-bold">
+              "You make my world so much brighter..."
+            </p>
+            <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-wider font-semibold">
+              Click to see next note ( <span id="memory-count">1</span> / 4 )
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE LOVE METER / SLIDER -->
+      <div class="bg-white/80 rounded-2xl p-5 mb-8 border border-rose-100 shadow-sm">
+        <div class="flex justify-between items-center mb-2">
+          <label class="text-sm font-bold text-gray-700">How much do I love you?</label>
+          <span id="love-meter-value" class="text-sm font-extrabold text-rose-600">1000% ❤️</span>
+        </div>
+        
+        <input type="range" id="loveSlider" min="100" max="10000" value="1000" oninput="updateLoveMeter(this.value)" class="w-full h-2.5 bg-rose-100 rounded-lg appearance-none cursor-pointer accent-rose-500">
+        
+        <p id="love-meter-desc" class="text-xs text-rose-500 font-semibold mt-2 italic">
+          "Literally to the moon, stars, and back infinity times!"
+        </p>
+      </div>
+
+      <!-- PAGE NAVIGATION -->
+      <div class="flex gap-3">
+        <button onclick="goToPage(1)" class="w-1/3 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-sm transition">
+          Back ⬅️
+        </button>
+        <button onclick="goToPage(3)" class="w-2/3 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-extrabold rounded-xl shadow-md hover:shadow-lg transition text-sm flex items-center justify-center gap-2">
+          <span>Read My Final Letter 💌</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- PAGE 3: FINAL LETTER & ENVELOPE            -->
+    <!-- ========================================== -->
+    <div id="page-3" class="glass-card rounded-3xl p-6 md:p-8 text-center hidden transition-all duration-500 transform">
+      
+      <span class="text-xs font-bold text-rose-500 uppercase tracking-widest bg-rose-100 px-3 py-1 rounded-full inline-block mb-3">
+        Final Step • From My Heart To Yours
+      </span>
+
+      <h2 class="text-2xl font-extrabold text-gray-800 mb-2">
+        A Handwritten Letter For You 💌
+      </h2>
+      <p class="text-xs md:text-sm text-gray-500 mb-8">
+        Tap the envelope below to unseal your love letter!
+      </p>
+
+      <!-- VIRTUAL INTERACTIVE ENVELOPE -->
+      <div class="envelope-wrapper flex justify-center items-center py-6 mb-6">
+        <div id="envelope" class="envelope" onclick="openEnvelope()">
+          <div class="envelope-flap"></div>
+          <div class="letter-preview flex flex-col justify-center items-center text-center">
+            <i class="fa-solid fa-heart text-rose-500 text-2xl mb-1"></i>
+            <p class="font-handwriting text-lg text-gray-700 font-bold">For My Princess ✨</p>
+          </div>
+          <div class="envelope-pocket"></div>
+        </div>
+      </div>
+
+      <!-- FULL LOVE LETTER MODAL / POPUP CARD -->
+      <div id="letter-modal" class="hidden bg-rose-50/90 border border-rose-200 rounded-2xl p-6 text-left shadow-lg transition-all duration-500 my-4">
+        <h3 class="font-handwriting text-3xl text-rose-600 font-bold mb-3">
+          My Dearest Shivi,
+        </h3>
+        <p class="font-handwriting text-xl text-gray-700 leading-relaxed mb-4">
+          I want you to know how truly special you are to me. Fights are temporary, but my love for you is forever. I'm sorry for my part in our misunderstanding. 
+        </p>
+        <p class="font-handwriting text-xl text-gray-700 leading-relaxed mb-4">
+          Thank you for your patience, your sweet smile, and for making every single day brighter just by existing. I love you more than words can ever say! 💕
+        </p>
+        <p class="font-handwriting text-2xl text-rose-600 font-bold text-right">
+          Forever Yours, <br>
+          [ mochi] ❤️
+        </p>
+      </div>
+
+      <!-- NAVIGATION / RESTART -->
+      <div class="flex gap-3 mt-6">
+        <button onclick="goToPage(2)" class="w-1/3 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-sm transition">
+          Back ⬅️
+        </button>
+        <button onclick="restartApp()" class="w-2/3 py-3 bg-rose-100 hover:bg-rose-200 text-rose-600 font-bold rounded-xl text-sm transition flex items-center justify-center gap-2">
+          <span>Replay From Start 🔄</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 text-center text-xs text-rose-400 font-medium py-4">
+    Made with ❤️ for the most special girl in the world
+  </footer>
+
+  <!-- AUDIO ELEMENT (Romantic BGM) -->
+  <audio id="bg-music" loop preload="auto">
+    <!-- Clean royalty-free romantic acoustic piano track -->
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-love-111663.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT INTERACTIVE LOGIC               -->
+  <!-- ========================================== -->
+  <script>
+    // --- BACKGROUND FLOATING HEARTS GENERATOR ---
+    function createFloatingHearts() {
+      const container = document.getElementById('hearts-bg-container');
+      const heartIcons = ['❤️', '💖', '🌸', '✨', '💕', '💗'];
+      
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'bg-heart';
+        heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 5 + 6) + 's';
+        heart.style.animationDelay = (Math.random() * 5) + 's';
+        heart.style.fontSize = (Math.random() * 15 + 16) + 'px';
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
+
+    // --- PAGE NAVIGATION SYSTEM ---
+    function goToPage(pageNumber) {
+      // Hide all pages
+      [1, 2, 3].forEach(num => {
+        const page = document.getElementById(`page-${num}`);
+        page.classList.add('hidden');
+      });
+
+      // Show requested page with smooth fade/scale effect
+      const activePage = document.getElementById(`page-${pageNumber}`);
+      activePage.classList.remove('hidden');
+      
+      // Trigger subtle pulse animation on reveal
+      activePage.classList.add('scale-95');
+      setTimeout(() => {
+        activePage.classList.remove('scale-95');
+        activePage.classList.add('scale-100');
+      }, 50);
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- PAGE 1: APOLOGY INTERACTION LOGIC ---
+    let yesClickCount = 0;
+    const yesMessages = [
+      "Are you sure? 🥺",
+      "Pretty please forgive me? 👉👈",
+      "Don't be mad, look how small this button is! 🥹",
+      "Okay fine, but I still love you! ❤️"
+    ];
+
+    function handleYesClick() {
+      yesClickCount++;
+      const yesBtn = document.getElementById('yes-btn');
+      const noBtn = document.getElementById('no-btn');
+      const questionText = document.getElementById('question-text');
+      const emoji = document.getElementById('apology-emoji');
+
+      // Update question text & emoji
+      if (yesClickCount <= yesMessages.length) {
+        questionText.innerText = yesMessages[yesClickCount - 1];
+      }
+
+      emoji.innerText = yesClickCount % 2 === 0 ? '😭' : '🥺';
+
+      // Shrink Yes Button & Enlarge No Button
+      const newYesScale = Math.max(0.4, 1 - yesClickCount * 0.15);
+      const newNoScale = 1 + yesClickCount * 0.15;
+
+      yesBtn.style.transform = `scale(${newYesScale})`;
+      noBtn.style.transform = `scale(${newNoScale})`;
+
+      // If clicked too many times, hide the yes button
+      if (yesClickCount >= 5) {
+        yesBtn.style.display = 'none';
+        questionText.innerText = "There's only one right answer now! 😉💕";
+      }
+    }
+
+    function handleForgiveness() {
+      // Trigger Confetti Celebration
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#f43f5e', '#fb7185', '#ffe4e6', '#ffffff']
+      });
+
+      // Hide question buttons and show celebratory next page button
+      document.getElementById('button-group').classList.add('hidden');
+      document.getElementById('forgiven-section').classList.remove('hidden');
+      document.getElementById('question-text').innerText = "You're the best! I love you so much! 🥰❤️";
+      document.getElementById('apology-emoji').innerText = '🥳';
+    }
+
+    // --- PAGE 2: MEMORIES CARD STACK LOGIC ---
+    const memories = [
+      { text: '"You make my world so much brighter..."', icon: '✨' },
+      { text: '"Your smile is my favorite thing in the universe."', icon: '😊' },
+      { text: '"Every moment with you is a memory I cherish."', icon: '🌸' },
+      { text: '"I will always choose you, no matter what."', icon: '💖' }
+    ];
+    let currentMemoryIndex = 0;
+
+    function nextMemoryCard() {
+      currentMemoryIndex = (currentMemoryIndex + 1) % memories.length;
+      
+      const card = document.getElementById('polaroid-card');
+      const textElem = document.getElementById('memory-text');
+      const iconElem = document.getElementById('memory-icon');
+      const countElem = document.getElementById('memory-count');
+
+      // Flip animation effect
+      card.style.transform = 'rotate(10deg) scale(0.9)';
+      card.style.opacity = '0.5';
+
+      setTimeout(() => {
+        textElem.innerText = memories[currentMemoryIndex].text;
+        iconElem.innerText = memories[currentMemoryIndex].icon;
+        countElem.innerText = currentMemoryIndex + 1;
+
+        card.style.transform = 'rotate(0deg) scale(1)';
+        card.style.opacity = '1';
+      }, 200);
+    }
+
+    // --- PAGE 2: LOVE METER SLIDER LOGIC ---
+    function updateLoveMeter(val) {
+      const valueElem = document.getElementById('love-meter-value');
+      const descElem = document.getElementById('love-meter-desc');
+
+      valueElem.innerText = `${val}% ❤️`;
+
+      if (val < 2000) {
+        descElem.innerText = '"More than all the stars in the sky!"';
+      } else if (val < 6000) {
+        descElem.innerText = '"To infinity and beyond!"';
+      } else {
+        descElem.innerText = '"Overwhelmingly, impossibly, endless love!" 🚀💖';
+      }
+    }
+
+    // --- PAGE 3: ENVELOPE & LETTER LOGIC ---
+    function openEnvelope() {
+      const envelope = document.getElementById('envelope');
+      const modal = document.getElementById('letter-modal');
+
+      envelope.classList.toggle('open');
+
+      setTimeout(() => {
+        modal.classList.remove('hidden');
+        modal.scrollIntoView({ behavior: 'smooth' });
+        
+        // Trigger soft celebratory hearts burst
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+      }, 600);
+    }
+
+    function restartApp() {
+      // Reset Page 1 state
+      yesClickCount = 0;
+      const yesBtn = document.getElementById('yes-btn');
+      const noBtn = document.getElementById('no-btn');
+      
+      yesBtn.style.display = 'block';
+      yesBtn.style.transform = 'scale(1)';
+      noBtn.style.transform = 'scale(1)';
+      
+      document.getElementById('button-group').classList.remove('hidden');
+      document.getElementById('forgiven-section').classList.add('hidden');
+      document.getElementById('question-text').innerText = 'Are you still mad at me? 🥺';
+      document.getElementById('apology-emoji').innerText = '🥺';
+
+      // Reset Envelope
+      document.getElementById('envelope').classList.remove('open');
+      document.getElementById('letter-modal').classList.add('hidden');
+
+      goToPage(1);
+    }
+
+    // --- MUSIC PLAYER TOGGLE LOGIC ---
+    const musicBtn = document.getElementById('music-toggle');
+    const audio = document.getElementById('bg-music');
+    const eqContainer = document.getElementById('eq-container');
+    const musicIcon = document.getElementById('music-icon');
+    const musicText = document.getElementById('music-text');
+    let isPlaying = false;
+
+    musicBtn.addEventListener('click', () => {
+      if (!isPlaying) {
+        audio.play().then(() => {
+          isPlaying = true;
+          eqContainer.classList.remove('hidden');
+          musicIcon.classList.add('hidden');
+          musicText.innerText = 'Playing 💕';
+        }).catch(err => {
+          console.log("Audio play blocked by browser:", err);
+        });
+      } else {
+        audio.pause();
+        isPlaying = false;
+        eqContainer.classList.add('hidden');
+        musicIcon.classList.remove('hidden');
+        musicText.innerText = 'Play Music 🎵';
+      }
+    });
+  </script>
+</body>
+</html>
